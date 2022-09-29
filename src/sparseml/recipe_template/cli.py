@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Copyright (c) 2021 - present / Neuralmagic, Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +14,61 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
+import click
 from sparseml import recipe_template
+from sparseml.version import __version__
 
 
-def main(*args, **kwargs):
+_LOGGER = logging.getLogger(__name__)
+
+
+@click.command(context_settings=(dict(show_default=True)))
+@click.version_option(version=__version__)
+@click.option(
+    "--pruning",
+    # other algos will be added in future
+    type=click.Choice(["true", "false", "gmp"], case_sensitive=False),
+    default="false",
+    help="Specify if recipe should include pruning steps, can also take in the "
+    "name of a pruning algorithm",
+)
+@click.option(
+    "--quantization",
+    type=click.Choice(["true", "false"], case_sensitive=False),
+    default="false",
+    help="Specify if recipe should include quantization steps, can also take in "
+    "the name of the target hardware",
+)
+@click.option(
+    "--lr",
+    "--learning_rate",
+    type=click.Choice(
+        ["constant", "cyclic", "stepped", "exponential", "linear"], case_sensitive=False
+    ),
+    default="constant",
+    help="Specify growth function for learning rate",
+)
+@click.option(
+    "--target",
+    type=click.Choice(["vnni", "tensorrt", "default"], case_sensitive=False),
+    default="default",
+    help="Specify growth function for learning rate",
+)
+def main(**kwargs):
     """
-    Driver function for sparseml.recipe_template cli
+    Utility to create a recipe template based on specified options
+
+    Example for using sparseml.recipe_template:
+
+         `sparseml.recipe_template --pruning true --quantization true`
+
+         `sparseml.recipe_template --quantization vnni --lr constant `
     """
-    recipe = recipe_template(*args, **kwargs)
-    return recipe
+    _LOGGER.debug(f"{kwargs}")
+    template = recipe_template(**kwargs)
+    print(f"Template:\n{template}")
 
 
 if __name__ == "__main__":
