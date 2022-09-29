@@ -9,7 +9,7 @@ from sparseml.pytorch.optim import ScheduledModifierManager
     ("false", "False", {}),
     ("acdc", "false", {})
 ])
-def test_recipe_template_returns_a_loadable_recipe():
-    actual = recipe_template()
+def test_recipe_template_returns_a_loadable_recipe(pruning, quantization, kwargs):
+    actual = recipe_template(pruning=pruning, quantization=quantization, **kwargs)
     assert actual
     ScheduledModifierManager.from_yaml(file_path=actual)
