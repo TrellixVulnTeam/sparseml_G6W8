@@ -48,10 +48,7 @@ except Exception:
     torch_intrinsic = None
 
 from sparseml.optim import BaseModifier, ModifierProp
-from sparseml.pytorch.sparsification.modifier import (
-    PyTorchModifierYAML,
-    ScheduledModifier,
-)
+from sparseml.pytorch.sparsification.modifier import ScheduledModifier
 from sparseml.pytorch.sparsification.quantization.helpers import (
     CONV_ACTIVATION_NAMES,
     LINEAR_ACTIVATION_NAMES,
@@ -82,7 +79,6 @@ _ModuleToQuantize = NamedTuple(
 )
 
 
-@PyTorchModifierYAML()
 class QuantizationModifier(ScheduledModifier):
     """
     Enables quantization aware training (QAT) for a given module or its submodules
